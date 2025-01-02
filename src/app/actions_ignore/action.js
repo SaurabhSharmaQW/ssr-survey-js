@@ -1,4 +1,4 @@
-'use server'
+/* 'use server'
  
 import axios from 'axios';
 import dotenv from 'dotenv';
@@ -16,4 +16,4 @@ export async function submitForm(data) {
         }
     );
     console.log(response.data);
-}
+} */

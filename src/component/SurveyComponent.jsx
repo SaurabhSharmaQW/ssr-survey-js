@@ -1,18 +1,37 @@
 "use client"
 
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import "survey-core/defaultV2.min.css";
 import { json } from "../app/json";
-import { submitForm } from "@/app/actions/action";
+import { submitSurveyData } from "@/app/lib/backend";
 
 function SurveyComponent() {
-    const survey = new Model(json);
-    survey.onComplete.add((sender, options) => {
-        submitForm(sender.data)
-    });
-    return (<Survey model={survey} />);
-}
+    const [surveyModel, setSurveyModel] = useState(null);
+  
+    useEffect(() => {
+      const survey = new Model(json);
+      setSurveyModel(survey);
+    }, []);
+  
+    useEffect(() => {
+      if (surveyModel) {
+        surveyModel.onComplete.add((sender) => {
+          submitSurveyData(sender.data)
+            .then(() => console.log("Survey data submitted successfully"))
+            .catch((error) =>
+              console.error("Error submitting survey data:", error)
+            );
+        });
+      }
+    }, [surveyModel]);
+  
+    if (!surveyModel) {
+      return null;
+    }
+  
+    return <Survey model={surveyModel} />;
+  }
 
 export default SurveyComponent;
